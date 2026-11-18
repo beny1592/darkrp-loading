@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>IL DJ Player</title>
+<style>html,body{margin:0;background:#000;overflow:hidden}</style></head>
+<body>
+<div id="p"></div>
+<script>
+var player = null, ready = false, pending = null, mode = "play", listCb = null;
+function send(fn, a, b, c) { try { if (window.gmod && gmod[fn]) gmod[fn](a, b, c); } catch (e) {} }
+
+var tag = document.createElement("script");
+tag.src = "https://www.youtube.com/iframe_api";
+document.body.appendChild(tag);
+
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player("p", {
+    width: 320, height: 180,
+    playerVars: { autoplay: 1, controls: 0, disablekb: 1, playsinline: 1, rel: 0, origin: location.origin },
+    events: {
+      onReady: function () {
+        ready = true; send("ready", 1);
+        if (pending) { var p = pending; pending = null; p(); }
+      },
+      onStateChange: function (e) {
+        if (e.data == 1) { // playing
+          var d = player.getVideoData() || {};
+          send("state", 1, player.getDuration() || 0, d.title || "");
+        } else if (e.data == 0) { send("state", 0, 0, ""); }
+        else if (e.data == 5 && mode == "list") { // playlist cued
+          var ids = player.getPlaylist() || [];
+          send("playlist", ids.join(","));
+          mode = "play";
+        }
+      },
+      onError: function (e) { send("error", e.data); }
+    }
+  });
+}
+
+function whenReady(fn) { if (ready) fn(); else pending = fn; }
+function play(id, t) { whenReady(function () { mode = "play"; player.loadVideoById({ videoId: id, startSeconds: Math.max(0, t || 0) }); }); }
+function stopVideo() { whenReady(function () { player.stopVideo(); }); }
+function vol(v) { if (!ready) return; player.setVolume(v); if (v <= 0) player.mute(); else player.unMute(); }
+function seek(t) { if (ready) player.seekTo(t, true); }
+function getTime() { if (ready) send("time", player.getCurrentTime() || 0); }
+function loadList(listId) { whenReady(function () { mode = "list"; player.cuePlaylist({ listType: "playlist", list: listId }); }); }
+</script>
+</body></html>
