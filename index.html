@@ -14,7 +14,7 @@
   .shade { position:fixed; inset:0;
            background:linear-gradient(to top, rgba(8,10,18,.95) 0%, rgba(8,10,18,.35) 32%, rgba(8,10,18,0) 55%); }
 
-  .bottom { position:fixed; left:40px; right:40px; bottom:34px; display:flex; gap:24px; align-items:flex-end; }
+  .bottom { position:fixed; left:40px; right:520px; bottom:34px; display:flex; gap:24px; align-items:flex-end; }
 
   .status { flex:1; display:flex; gap:20px; align-items:center; background:var(--panel);
             border-top:3px solid var(--orange); border-radius:12px; padding:18px 22px; }
@@ -28,7 +28,7 @@
           border-radius:6px; transition:width .4s ease; }
   .msg { margin-top:8px; font-size:14px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-  .tips { width:430px; direction:rtl; text-align:right; background:var(--panel);
+  .tips { position:fixed; top:34px; right:40px; width:430px; direction:rtl; text-align:right; background:var(--panel);
           border-top:3px solid var(--orange); border-radius:12px; padding:16px 22px; min-height:128px; }
   .tips h3 { color:var(--orange); font-size:16px; letter-spacing:.5px; margin-bottom:8px; }
   .tip { font-size:17px; line-height:1.55; transition:opacity .5s; }
@@ -49,10 +49,11 @@
       </div>
     </div>
 
-    <div class="tips">
-      <h3>💡 טיפ</h3>
-      <div class="tip" id="tip"></div>
-    </div>
+  </div>
+
+  <div class="tips">
+    <h3>💡 טיפ</h3>
+    <div class="tip" id="tip"></div>
   </div>
 
 <script>
